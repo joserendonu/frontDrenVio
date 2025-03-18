@@ -100,6 +100,7 @@ function App() {
 
   return (
     <div className="App">
+       <h1 style={{"margin-left":"auto","margin-right":"auto" ,  display:'block'}} >PRODUCTOS</h1>
       {message &&
         <div className="error-message">{message}</div>
       }
