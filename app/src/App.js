@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import Product from "./components/Product";
+import UProduct from "./components/UProduct";
+
 function App() {
   const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showProductView, setShowProductView] = useState(false);
+  const [showUProductView, setshowUProductView] = useState(false);
+
   const handleCreateProduct = () => {
     setShowProductView(true);
+  };
+  const handleUpdateProduct = () => {
+    setshowUProductView(true);
   };
   useEffect(() => {
     fetchProducts();
@@ -28,7 +35,7 @@ function App() {
   };
   return (
     <div>
-      {!showProductView && (
+      {!showProductView && !showUProductView &&(
         <div className="App">
           <h1 style={{ "margin-left": "auto", "margin-right": "auto", display: 'block' }} >PRODUCTOS</h1>
           {message &&
@@ -42,7 +49,7 @@ function App() {
                 <div key={product.id} className="product">
                   <h2 className="product-name">{product.name}</h2>
                   <p className="product-description">{product.description}</p>
-                  <button>Update</button>
+                  <button onClick={handleUpdateProduct}>Update</button>
                   <br></br>
                   <button style={{ backgroundColor: 'red' }}>Delete</button>
                 </div>
@@ -54,6 +61,9 @@ function App() {
       )}
       {showProductView && (
         <Product />// Renderiza el componente que muestra el HTML de Product
+      )}
+          {showUProductView && (
+        <UProduct />// Renderiza el componente que muestra el HTML de Product
       )}
     </div>
   );
