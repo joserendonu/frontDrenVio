@@ -17,6 +17,21 @@ function App() {
   const handleUpdateProduct = () => {
     setshowUProductView(true);
   };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const response = await fetch('http://localhost:3000/delet/'+id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log('Producto creado', data);
+    } catch (error) {
+      console.error('Error al crear el producto', error);
+    }
+  };
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -35,7 +50,7 @@ function App() {
   };
   return (
     <div>
-      {!showProductView && !showUProductView &&(
+      {!showProductView && !showUProductView && (
         <div className="App">
           <h1 style={{ "margin-left": "auto", "margin-right": "auto", display: 'block' }} >PRODUCTOS</h1>
           {message &&
@@ -51,7 +66,7 @@ function App() {
                   <p className="product-description">{product.description}</p>
                   <button onClick={handleUpdateProduct}>Update</button>
                   <br></br>
-                  <button style={{ backgroundColor: 'red' }}>Delete</button>
+                  <button onClick={() => handleDeleteProduct(product._id)} style={{ backgroundColor: 'red' }}>Delete</button>
                 </div>
               ))}
             </div>
@@ -62,7 +77,7 @@ function App() {
       {showProductView && (
         <Product />// Renderiza el componente que muestra el HTML de Product
       )}
-          {showUProductView && (
+      {showUProductView && (
         <UProduct />// Renderiza el componente que muestra el HTML de Product
       )}
     </div>
