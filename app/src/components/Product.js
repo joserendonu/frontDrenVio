@@ -1,98 +1,82 @@
-import React, {useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useRef } from 'react';
 
 function Product() {
-    const onSubmit = (data) => {
-        console.log(data) // {nombre: "Valor del input nombre", ...}
-        reset()
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState({});
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    if (!formRef.current) {
+       console.error("El formulario no está referenciado correctamente.");
+       return;
     }
-    const {handleSubmit, reset} = useForm();
 
-    useEffect(() => {
-        document.getElementById('product-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+    const form = formRef.current;
+    const formData = {
+        name: form.name.value,
+        description: form.description.value,
+        stock: form.stock.value,
+        paralelo: form.paralelo.value,
+        brand: form.brand.value,
+        image: form.image.value
+      };
+    
+    setFormData(formData)
 
-            const form = event.target;
-            console.log("**********************************************************")
-            console.log(form.name.value)
-            const data = {
-                name: form.name.value,
-                description: form.description.value,
-                stock: parseInt(form.stock.value),
-                basePrice: parseFloat(form.basePrice.value),
-                brand: form.brand.value,
-                sku: form.sku.value,
-                image: form.image.value,
-            };
+    try {
+      const response = await fetch('http://localhost:3000/prod', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log('Producto creado', data);
+    } catch (error) {
+      console.error('Error al crear el producto', error);
+    }
+    form.reset();
+    window.location.href = "http://localhost:8001"; 
+  };
 
-            /*       name: "asdf",//form.name.value,
-                       description: "asdf",//form.description.value,
-                       stock: 1234, //parseInt(form.stock.value),
-                       basePrice: 1234, //parseFloat(form.basePrice.value),
-                       brand: "asdf",//form.brand.value,
-                       sku: "asdf",//form.sku.value,
-                       image: "asdf",//form.image.value,*/
-
-            fetch("http://localhost:3000/prod", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Producto creado:", data);
-                })
-                .catch(error => {
-                    console.error('Error al crear el producto:', error);
-                });
-
-            form.reset();
-        });
-    }, []);
-
-    const descriptionRef = useRef(null);
-    const nameRef = useRef(null);
-    const urlRef = useRef(null);
-    const supplierRef = useRef(null);
-    return (
-        <div class="product-card">
-            <h2>Crear Nuevo Producto</h2>
-            <form onSubmit={handleSubmit(onSubmit)} id="product-form">
-                <div class="form-group">
-                    <label for="name">Nombre:</label>
-                    <input ref={nameRef} type="text" id="name" name="name" required/>
-                </div>
-                <div class="form-group">
-                    <label for="description" >Descripción:</label>
-                    <textarea ref={descriptionRef}  id="description" name="description" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Stock:</label>
-                    <input ref={urlRef} type="number" id="stock" name="stock" required/>
-                </div>
-                <div class="form-group">
-                    <label for="basePrice">Precio Base:</label>
-                    <input type="number" id="basePrice" name="basePrice" step="0.01" ref={supplierRef} required/>
-                </div>
-                <div class="form-group">
-                    <label for="brand">Marca:</label>
-                    <input type="text" id="brand" name="brand" required/>
-                </div>
-                <div class="form-group">
-                    <label for="sku">SKU:</label>
-                    <input type="text" id="sku" name="sku" required/>
-                </div>
-                <div class="form-group">
-                    <label for="imageUrl">URL de la Imagen:</label>
-                    <input type="text" id="imageUrl" name="imageUrl" required/>
-                </div>
-
-                <button type="submit">Crear Producto</button>
-            </form>
+  return (
+    <>
+      <form onSubmit={handleSubmit} ref={formRef}>
+      
+        <div className='form-group'>
+          <label>Nombre</label>
+          <input type='text' name='name' required />
         </div>
-    );
+        
+        <div className='form-group'>
+          <label>Descripción</label>
+          <input type='text' name='description' required />
+        </div>
+
+        <div className='form-group'>
+          <label>Stock</label>
+          <input type='number' name='stock' required />
+        </div>
+
+        <div className='form-group'>
+          <label>Paralelo</label>
+          <input type='number' name='paralelo'  required/>
+        </div>
+        <div className='form-group'>
+          <label>Marca</label>
+          <input type='text' name='brand'  required />
+        </div>
+        <div className='form-group'>
+          <label>Imagen</label>
+          <input type='text' name='image'  required/>
+        </div>
+
+        <button type='submit'>Crear Producto</button>
+      </form>
+    </>
+  );
 }
 
 export default Product;
