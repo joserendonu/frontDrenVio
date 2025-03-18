@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import Product from "./components/Product";
-
-
 function App() {
   const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showProductView, setShowProductView] = useState(false);
-
   const handleCreateProduct = () => {
     setShowProductView(true);
   };
-
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -22,7 +18,6 @@ function App() {
     setIsLoading(true)
     try {
       const response = await axios.get('http://localhost:3000/products');
-      console.log(response.data);
       setProducts(response.data);
     } catch (error) {
       console.error('Error al obtener los datos:', error);
@@ -31,17 +26,6 @@ function App() {
       setIsLoading(false)
     }
   };
-
-  // function Product(props) {
-  //   const { product } = props;
-  //   return (
-  //     <div className="product">
-  //       <h2 className="product-name">{product.name}</h2>
-  //       <p className="product-description">{product.description}</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
       {!showProductView && (
@@ -63,19 +47,15 @@ function App() {
                   <button style={{ backgroundColor: 'red' }}>Delete</button>
                 </div>
               ))}
-
             </div>
-
           )}
           <button onClick={handleCreateProduct} style={{ "margin-left": "auto", "margin-right": "auto", display: 'block' }} >Create</button>`
-
         </div>
       )}
       {showProductView && (
         <Product />// Renderiza el componente que muestra el HTML de Product
       )}
     </div>
-
   );
 }
 export default App;
